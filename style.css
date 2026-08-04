@@ -1,3 +1,59 @@
-#root {
-  color: red;
+/* Container layout: Responsive Grid displaying at least 3 cards on desktop */
+.episodes-container {
+  display: grid;
+  /* Automatically fits as many 300px columns as possible, expanding to fill space */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Individual Episode Card styling */
+.episode-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Optional hover effect to make cards feel interactive */
+.episode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Title formatting */
+.episode-card h3 {
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+/* Responsive Image fitting */
+.episode-card img {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+/* Episode Summary styling */
+.episode-summary {
+  font-size: 0.9rem;
+  color: #555555;
+  text-align: left;
+  width: 100%;
+  margin-top: auto; /* Pushes summary content neatly to the bottom */
 }
