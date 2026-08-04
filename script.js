@@ -4,9 +4,69 @@ function setup() {
   makePageForEpisodes(allEpisodes);
 }
 
+// Helper function to format Season and Episode into "S01E01" code
+function formatEpisodeCode(season, number) {
+  const paddedSeason = String(season).padStart(2, "0");
+  const paddedNumber = String(number).padStart(2, "0");
+  return `S${paddedSeason}E${paddedNumber}`;
+}
+
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
-  rootElem.textContent = `Got ${episodeList.length} episode(s)`;
+
+  // Clear the placeholder text before appending content
+  rootElem.innerHTML = "";
+
+  // Create an episode container or grid wrapper
+  const container = document.createElement("div");
+  container.className = "episodes-container";
+
+  // Loop through all episodes
+  episodeList.forEach((episode) => {
+    // 1. Create episode card wrapper
+    const card = document.createElement("section");
+    card.className = "episode-card";
+
+    // 2. Build Title with Episode Code (e.g., "Winter is Coming - S01E01")
+    const title = document.createElement("h3");
+    const code = formatEpisodeCode(episode.season, episode.number);
+    title.textContent = `${episode.name} - ${code}`;
+    card.appendChild(title);
+
+    // 3. Medium-sized image
+    if (episode.image && episode.image.medium) {
+      const img = document.createElement("img");
+      img.src = episode.image.medium;
+      img.alt = episode.name;
+      card.appendChild(img);
+    }
+
+    // 4. Summary text (using innerHTML because TVMaze wraps summaries in <p> tags)
+    const summary = document.createElement("div");
+    summary.className = "episode-summary";
+    summary.innerHTML = episode.summary || "<p>No summary available.</p>";
+    card.appendChild(summary);
+
+    // Append card to container
+    container.appendChild(card);
+  });
+
+  rootElem.appendChild(container);
+
+  // 5. Add TVMaze attribution requirement
+  addTvmazeAttribution();
+}
+
+function addTvmazeAttribution() {
+  // Prevent adding multiple footers if function runs again
+  if (document.getElementById("tvmaze-attribution")) return;
+
+  const footer = document.createElement("footer");
+  footer.id = "tvmaze-attribution";
+  footer.innerHTML = `
+    <p>Data provided by <a href="https://www.tvmaze.com/" target="_blank" rel="noopener noreferrer">TVMaze.com</a></p>
+  `;
+  document.body.appendChild(footer);
 }
 
 window.onload = setup;
