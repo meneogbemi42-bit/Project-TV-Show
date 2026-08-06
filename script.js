@@ -1,7 +1,78 @@
 //You can edit ALL of the code here
+let allEpisodes = [];
+
 function setup() {
-  const allEpisodes = getAllEpisodes();
+  allEpisodes = getAllEpisodes();
+  populateSelectDropdown(allEpisodes);
   makePageForEpisodes(allEpisodes);
+  updateSearchCount(allEpisodes.length, allEpisodes.length);
+  // Event Listeners for Live Search & Dropdown Selection
+  const searchInput = document.getElementById("search-input");
+  const episodeSelect = document.getElementById("episode-select");
+
+  searchInput.addEventListener("input", handleSearch);
+  episodeSelect.addEventListener("change", handleSelect);
+}
+
+// 2. Populate the <select> dropdown (e.g., "S01E01 - Winter is Coming")
+function populateSelectDropdown(episodes) {
+  const select = document.getElementById("episode-select");
+
+  episodes.forEach((episode) => {
+    const option = document.createElement("option");
+    option.value = episode.id;
+    const code = formatEpisodeCode(episode.season, episode.number);
+    option.textContent = `${code} - ${episode.name}`;
+    select.appendChild(option);
+  });
+}
+
+// 3. Live Search Handler
+function handleSearch(event) {
+  const searchTerm = event.target.value.toLowerCase().trim();
+
+  // Reset dropdown back to "Show all episodes" when typing in search
+  document.getElementById("episode-select").value = "ALL";
+
+  const filteredEpisodes = allEpisodes.filter((episode) => {
+    const nameMatches = episode.name.toLowerCase().includes(searchTerm);
+    const summaryMatches = episode.summary
+      ? episode.summary.toLowerCase().includes(searchTerm)
+      : false;
+
+    return nameMatches || summaryMatches;
+  });
+
+  makePageForEpisodes(filteredEpisodes);
+  updateSearchCount(filteredEpisodes.length, allEpisodes.length);
+}
+
+// 4. Dropdown Selector Handler
+function handleSelect(event) {
+  const selectedId = event.target.value;
+
+  // Clear search input text when picking from dropdown
+  document.getElementById("search-input").value = "";
+
+  if (selectedId === "ALL") {
+    makePageForEpisodes(allEpisodes);
+    updateSearchCount(allEpisodes.length, allEpisodes.length);
+  } else {
+    // Isolate and show only the selected episode
+    const selectedEpisode = allEpisodes.filter(
+      (episode) => String(episode.id) === String(selectedId),
+    );
+    makePageForEpisodes(selectedEpisode);
+    updateSearchCount(selectedEpisode.length, allEpisodes.length);
+  }
+}
+
+// 5. Helper to update match counter display
+function updateSearchCount(matchCount, totalCount) {
+  const countDisplay = document.getElementById("search-count");
+  if (countDisplay) {
+    countDisplay.textContent = `Displaying ${matchCount}/${totalCount} episodes`;
+  }
 }
 
 // Helper function to format Season and Episode into "S01E01" code
